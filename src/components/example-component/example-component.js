@@ -1,3 +1,16 @@
-import { Element }  from '@polymer/polymer'
+import { Element }  from '@polymer/polymer/polymer-element'
 
-console.log(Element)
+class ExampleComponent extends Element {
+  static get is () {
+    return 'example-component'
+  }
+  
+  static get template () {
+    return `<h1>Hello World</h1>`
+  }
+}
+
+customElements.define(ExampleComponent.is, ExampleComponent)
+
+export default Element
+
