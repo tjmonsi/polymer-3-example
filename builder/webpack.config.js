@@ -34,28 +34,44 @@ module.exports = {
   module: {
     rules: [
       {
-        // If you see a file that ends in .html, send it to these loaders.
-        test: /\.html$/,
-        // This is an example of chained loaders in Webpack.
-        // Chained loaders run last to first. So it will run
-        // polymer-webpack-loader, and hand the output to
-        // babel-loader. This let's us transpile JS in our `<script>` elements.
-        use: [
-          {
-            loader: 'babel-loader'
-          },
-          {
-            loader: 'polymer-webpack-loader',
-            options: {
-              processStyleLinks: true
-            }
-          }
-        ]
-      },
-      {
         // If you see a file that ends in .js, just send it to the babel-loader.
         test: /\.js$/,
-        use: 'babel-loader'
+        use: {
+          loader: 'babel-loader',
+          // options: {
+          //   presets: [
+          //     ['env', {
+          //       modules: false,
+          //       useBuiltIns: true,
+          //       targets: {
+          //         browsers: [
+          //           '> 1%',
+          //           'last 2 versions',
+          //           'Firefox ESR',
+          //         ],
+          //       },
+          //     }],
+          //   ],
+          // },
+          options: {
+            presets: [
+              ['env', {
+                modules: false,
+                useBuiltIns: true,
+                targets: {
+                  browsers: [
+                    'Chrome >= 60',
+                    'Safari >= 10.1',
+                    'iOS >= 10.3',
+                    'Firefox >= 54',
+                    'Edge >= 15',
+                  ],
+                },
+              }],
+            ],
+          } 
+        }
+        
       },
       {
         test: /\.(gif|png|jpe?g|svg)$/i,
