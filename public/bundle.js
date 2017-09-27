@@ -72,6 +72,8 @@
 
 __webpack_require__(1);
 
+__webpack_require__(16);
+
 /***/ }),
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -5801,6 +5803,595 @@ var TemplateStamp = exports.TemplateStamp = (0, _mixin.dedupingMixin)(function (
 
   return TemplateStamp;
 });
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _templateObject = _taggedTemplateLiteral(['<h1>Hello World 2</h1>'], ['<h1>Hello World 2</h1>']);
+
+var _propertyAccessors = __webpack_require__(13);
+
+var _litHtml = __webpack_require__(17);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+var template = (0, _litHtml.html)(_templateObject);
+
+var ExampleComponent2 = function (_PropertyAccessors) {
+  _inherits(ExampleComponent2, _PropertyAccessors);
+
+  _createClass(ExampleComponent2, null, [{
+    key: 'is',
+    get: function get() {
+      return 'example-component-2';
+    }
+  }]);
+
+  function ExampleComponent2() {
+    _classCallCheck(this, ExampleComponent2);
+
+    var _this = _possibleConstructorReturn(this, (ExampleComponent2.__proto__ || Object.getPrototypeOf(ExampleComponent2)).call(this));
+
+    _this.attachShadow({ mode: 'open' });
+    (0, _litHtml.render)(template, _this.shadowRoot);
+    return _this;
+  }
+
+  return ExampleComponent2;
+}((0, _propertyAccessors.PropertyAccessors)(HTMLElement));
+
+customElements.define(ExampleComponent2.is, ExampleComponent2);
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+exports.html = html;
+exports.render = render;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * @license
+ * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+ * This code may only be used under the BSD style license found at
+ * http://polymer.github.io/LICENSE.txt
+ * The complete set of authors may be found at
+ * http://polymer.github.io/AUTHORS.txt
+ * The complete set of contributors may be found at
+ * http://polymer.github.io/CONTRIBUTORS.txt
+ * Code distributed by Google as part of the polymer project is also
+ * subject to an additional IP rights grant found at
+ * http://polymer.github.io/PATENTS.txt
+ */
+// The first argument to JS template tags retain identity across multiple
+// calls to a tag for the same literal, so we can cache work done per literal
+// in a Map.
+var templates = new Map();
+/**
+ * Interprets a template literal as an HTML template that can efficiently
+ * render to and update a container.
+ */
+function html(strings) {
+    var template = templates.get(strings);
+    if (template === undefined) {
+        template = new Template(strings);
+        templates.set(strings, template);
+    }
+
+    for (var _len = arguments.length, values = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        values[_key - 1] = arguments[_key];
+    }
+
+    return new TemplateResult(template, values);
+}
+/**
+ * The return type of `html`, which holds a Template and the values from
+ * interpolated expressions.
+ */
+
+var TemplateResult = exports.TemplateResult = function TemplateResult(template, values) {
+    _classCallCheck(this, TemplateResult);
+
+    this.template = template;
+    this.values = values;
+};
+/**
+ * Renders a template to a container.
+ *
+ * To update a container with new values, reevaluate the template literal and
+ * call `render` with the new result.
+ */
+
+
+function render(result, container) {
+    var partCallback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : defaultPartCallback;
+
+    var instance = container.__templateInstance;
+    // Repeat render, just call update()
+    if (instance !== undefined && instance.template === result.template && instance._partCallback === partCallback) {
+        instance.update(result.values);
+        return;
+    }
+    // First render, create a new TemplateInstance and append it
+    instance = new TemplateInstance(result.template, partCallback);
+    container.__templateInstance = instance;
+    var fragment = instance._clone();
+    instance.update(result.values);
+    var child = void 0;
+    while (child = container.lastChild) {
+        container.removeChild(child);
+    }
+    container.appendChild(fragment);
+}
+/**
+ * An expression marker with embedded unique key to avoid
+ * https://github.com/PolymerLabs/lit-html/issues/62
+ */
+var exprMarker = '{{lit-' + Math.random() + '}}';
+/**
+ * A placeholder for a dynamic expression in an HTML template.
+ *
+ * There are two built-in part types: AttributePart and NodePart. NodeParts
+ * always represent a single dynamic expression, while AttributeParts may
+ * represent as many expressions are contained in the attribute.
+ *
+ * A Template's parts are mutable, so parts can be replaced or modified
+ * (possibly to implement different template semantics). The contract is that
+ * parts can only be replaced, not removed, added or reordered, and parts must
+ * always consume the correct number of values in their `update()` method.
+ *
+ * TODO(justinfagnani): That requirement is a little fragile. A
+ * TemplateInstance could instead be more careful about which values it gives
+ * to Part.update().
+ */
+
+var TemplatePart = exports.TemplatePart = function TemplatePart(type, index, name, rawName, strings) {
+    _classCallCheck(this, TemplatePart);
+
+    this.type = type;
+    this.index = index;
+    this.name = name;
+    this.rawName = rawName;
+    this.strings = strings;
+};
+
+var Template = exports.Template = function Template(strings) {
+    _classCallCheck(this, Template);
+
+    this.parts = [];
+    this.element = document.createElement('template');
+    this.element.innerHTML = strings.join(exprMarker);
+    var walker = document.createTreeWalker(this.element.content, 5 /* elements & text */);
+    var index = -1;
+    var partIndex = 0;
+    var nodesToRemove = [];
+    while (walker.nextNode()) {
+        index++;
+        var node = walker.currentNode;
+        if (node.nodeType === 1 /* ELEMENT_NODE */) {
+                if (!node.hasAttributes()) continue;
+                var attributes = node.attributes;
+                for (var i = 0; i < attributes.length; i++) {
+                    var attribute = attributes.item(i);
+                    var attributeStrings = attribute.value.split(exprMarker);
+                    if (attributeStrings.length > 1) {
+                        // Get the template literal section leading up to the first
+                        // expression in this attribute attribute
+                        var attributeString = strings[partIndex];
+                        // Trim the trailing literal value if this is an interpolation
+                        var rawNameString = attributeString.substring(0, attributeString.length - attributeStrings[0].length);
+                        // Find the attribute name
+                        var rawName = rawNameString.match(/((?:\w|[.\-_$])+)=["']?$/)[1];
+                        this.parts.push(new TemplatePart('attribute', index, attribute.name, rawName, attributeStrings));
+                        node.removeAttribute(attribute.name);
+                        partIndex += attributeStrings.length - 1;
+                        i--;
+                    }
+                }
+            } else if (node.nodeType === 3 /* TEXT_NODE */) {
+                var _strings = node.nodeValue.split(exprMarker);
+                if (_strings.length > 1) {
+                    var parent = node.parentNode;
+                    var lastIndex = _strings.length - 1;
+                    // We have a part for each match found
+                    partIndex += lastIndex;
+                    // We keep this current node, but reset its content to the last
+                    // literal part. We insert new literal nodes before this so that the
+                    // tree walker keeps its position correctly.
+                    node.textContent = _strings[lastIndex];
+                    // Generate a new text node for each literal section
+                    // These nodes are also used as the markers for node parts
+                    for (var _i = 0; _i < lastIndex; _i++) {
+                        parent.insertBefore(new Text(_strings[_i]), node);
+                        this.parts.push(new TemplatePart('node', index++));
+                    }
+                } else if (!node.nodeValue.trim()) {
+                    nodesToRemove.push(node);
+                    index--;
+                }
+            }
+    }
+    // Remove text binding nodes after the walk to not disturb the TreeWalker
+    var _iteratorNormalCompletion = true;
+    var _didIteratorError = false;
+    var _iteratorError = undefined;
+
+    try {
+        for (var _iterator = nodesToRemove[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var n = _step.value;
+
+            n.parentNode.removeChild(n);
+        }
+    } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+                _iterator.return();
+            }
+        } finally {
+            if (_didIteratorError) {
+                throw _iteratorError;
+            }
+        }
+    }
+};
+
+var getValue = exports.getValue = function getValue(part, value) {
+    // `null` as the value of a Text node will render the string 'null'
+    // so we convert it to undefined
+    if (value != null && value.__litDirective === true) {
+        value = value(part);
+    }
+    return value === null ? undefined : value;
+};
+var directive = exports.directive = function directive(f) {
+    f.__litDirective = true;
+    return f;
+};
+
+var AttributePart = exports.AttributePart = function () {
+    function AttributePart(instance, element, name, strings) {
+        _classCallCheck(this, AttributePart);
+
+        this.instance = instance;
+        this.element = element;
+        this.name = name;
+        this.strings = strings;
+        this.size = strings.length - 1;
+    }
+
+    _createClass(AttributePart, [{
+        key: 'setValue',
+        value: function setValue(values, startIndex) {
+            var strings = this.strings;
+            var text = '';
+            for (var i = 0; i < strings.length; i++) {
+                text += strings[i];
+                if (i < strings.length - 1) {
+                    var v = getValue(this, values[startIndex + i]);
+                    if (v && (Array.isArray(v) || typeof v !== 'string' && v[Symbol.iterator])) {
+                        var _iteratorNormalCompletion2 = true;
+                        var _didIteratorError2 = false;
+                        var _iteratorError2 = undefined;
+
+                        try {
+                            for (var _iterator2 = v[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                                var t = _step2.value;
+
+                                // TODO: we need to recursively call getValue into iterables...
+                                text += t;
+                            }
+                        } catch (err) {
+                            _didIteratorError2 = true;
+                            _iteratorError2 = err;
+                        } finally {
+                            try {
+                                if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                                    _iterator2.return();
+                                }
+                            } finally {
+                                if (_didIteratorError2) {
+                                    throw _iteratorError2;
+                                }
+                            }
+                        }
+                    } else {
+                        text += v;
+                    }
+                }
+            }
+            this.element.setAttribute(this.name, text);
+        }
+    }]);
+
+    return AttributePart;
+}();
+
+var NodePart = exports.NodePart = function () {
+    function NodePart(instance, startNode, endNode) {
+        _classCallCheck(this, NodePart);
+
+        this.instance = instance;
+        this.startNode = startNode;
+        this.endNode = endNode;
+    }
+
+    _createClass(NodePart, [{
+        key: 'setValue',
+        value: function setValue(value) {
+            value = getValue(this, value);
+            if (value === null || !((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' || typeof value === 'function')) {
+                // Handle primitive values
+                // If the value didn't change, do nothing
+                if (value === this._previousValue) {
+                    return;
+                }
+                this._setText(value);
+            } else if (value instanceof TemplateResult) {
+                this._setTemplateResult(value);
+            } else if (Array.isArray(value) || value[Symbol.iterator]) {
+                this._setIterable(value);
+            } else if (value instanceof Node) {
+                this._setNode(value);
+            } else if (value.then !== undefined) {
+                this._setPromise(value);
+            } else {
+                // Fallback, will render the string representation
+                this._setText(value);
+            }
+        }
+    }, {
+        key: '_insert',
+        value: function _insert(node) {
+            this.endNode.parentNode.insertBefore(node, this.endNode);
+        }
+    }, {
+        key: '_setNode',
+        value: function _setNode(value) {
+            this.clear();
+            this._insert(value);
+            this._previousValue = value;
+        }
+    }, {
+        key: '_setText',
+        value: function _setText(value) {
+            var node = this.startNode.nextSibling;
+            if (node === this.endNode.previousSibling && node.nodeType === Node.TEXT_NODE) {
+                // If we only have a single text node between the markers, we can just
+                // set its value, rather than replacing it.
+                // TODO(justinfagnani): Can we just check if _previousValue is
+                // primitive?
+                node.textContent = value;
+            } else {
+                this._setNode(new Text(value));
+            }
+            this._previousValue = value;
+        }
+    }, {
+        key: '_setTemplateResult',
+        value: function _setTemplateResult(value) {
+            var instance = void 0;
+            if (this._previousValue && this._previousValue.template === value.template) {
+                instance = this._previousValue;
+            } else {
+                instance = new TemplateInstance(value.template, this.instance._partCallback);
+                this._setNode(instance._clone());
+                this._previousValue = instance;
+            }
+            instance.update(value.values);
+        }
+    }, {
+        key: '_setIterable',
+        value: function _setIterable(value) {
+            // For an Iterable, we create a new InstancePart per item, then set its
+            // value to the item. This is a little bit of overhead for every item in
+            // an Iterable, but it lets us recurse easily and efficiently update Arrays
+            // of TemplateResults that will be commonly returned from expressions like:
+            // array.map((i) => html`${i}`), by reusing existing TemplateInstances.
+            // If _previousValue is an array, then the previous render was of an
+            // iterable and _previousValue will contain the NodeParts from the previous
+            // render. If _previousValue is not an array, clear this part and make a new
+            // array for NodeParts.
+            if (!Array.isArray(this._previousValue)) {
+                this.clear();
+                this._previousValue = [];
+            }
+            // Lets of keep track of how many items we stamped so we can clear leftover
+            // items from a previous render
+            var itemParts = this._previousValue;
+            var partIndex = 0;
+            var _iteratorNormalCompletion3 = true;
+            var _didIteratorError3 = false;
+            var _iteratorError3 = undefined;
+
+            try {
+                for (var _iterator3 = value[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                    var item = _step3.value;
+
+                    // Try to reuse an existing part
+                    var itemPart = itemParts[partIndex];
+                    // If no existing part, create a new one
+                    if (itemPart === undefined) {
+                        // If we're creating the first item part, it's startNode should be the
+                        // container's startNode
+                        var itemStart = this.startNode;
+                        // If we're not creating the first part, create a new separator marker
+                        // node, and fix up the previous part's endNode to point to it
+                        if (partIndex > 0) {
+                            var previousPart = itemParts[partIndex - 1];
+                            itemStart = previousPart.endNode = new Text();
+                            this._insert(itemStart);
+                        }
+                        itemPart = new NodePart(this.instance, itemStart, this.endNode);
+                        itemParts.push(itemPart);
+                    }
+                    itemPart.setValue(item);
+                    partIndex++;
+                }
+            } catch (err) {
+                _didIteratorError3 = true;
+                _iteratorError3 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                        _iterator3.return();
+                    }
+                } finally {
+                    if (_didIteratorError3) {
+                        throw _iteratorError3;
+                    }
+                }
+            }
+
+            if (partIndex === 0) {
+                this.clear();
+                this._previousValue = undefined;
+            } else if (partIndex < itemParts.length) {
+                var lastPart = itemParts[partIndex - 1];
+                this.clear(lastPart.endNode.previousSibling);
+                lastPart.endNode = this.endNode;
+            }
+        }
+    }, {
+        key: '_setPromise',
+        value: function _setPromise(value) {
+            var _this = this;
+
+            value.then(function (v) {
+                if (_this._previousValue === value) {
+                    _this.setValue(v);
+                }
+            });
+            this._previousValue = value;
+        }
+    }, {
+        key: 'clear',
+        value: function clear() {
+            var startNode = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.startNode;
+
+            var node = void 0;
+            while ((node = startNode.nextSibling) !== this.endNode) {
+                node.parentNode.removeChild(node);
+            }
+        }
+    }]);
+
+    return NodePart;
+}();
+
+var defaultPartCallback = exports.defaultPartCallback = function defaultPartCallback(instance, templatePart, node) {
+    if (templatePart.type === 'attribute') {
+        return new AttributePart(instance, node, templatePart.name, templatePart.strings);
+    } else if (templatePart.type === 'node') {
+        return new NodePart(instance, node, node.nextSibling);
+    }
+    throw new Error('Unknown part type ' + templatePart.type);
+};
+/**
+ * An instance of a `Template` that can be attached to the DOM and updated
+ * with new values.
+ */
+
+var TemplateInstance = exports.TemplateInstance = function () {
+    function TemplateInstance(template) {
+        var partCallback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : defaultPartCallback;
+
+        _classCallCheck(this, TemplateInstance);
+
+        this._parts = [];
+        this.template = template;
+        this._partCallback = partCallback;
+    }
+
+    _createClass(TemplateInstance, [{
+        key: 'update',
+        value: function update(values) {
+            var valueIndex = 0;
+            var _iteratorNormalCompletion4 = true;
+            var _didIteratorError4 = false;
+            var _iteratorError4 = undefined;
+
+            try {
+                for (var _iterator4 = this._parts[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                    var part = _step4.value;
+
+                    if (part.size === undefined) {
+                        part.setValue(values[valueIndex]);
+                        valueIndex++;
+                    } else {
+                        part.setValue(values, valueIndex);
+                        valueIndex += part.size;
+                    }
+                }
+            } catch (err) {
+                _didIteratorError4 = true;
+                _iteratorError4 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                        _iterator4.return();
+                    }
+                } finally {
+                    if (_didIteratorError4) {
+                        throw _iteratorError4;
+                    }
+                }
+            }
+        }
+    }, {
+        key: '_clone',
+        value: function _clone() {
+            var fragment = document.importNode(this.template.element.content, true);
+            if (this.template.parts.length > 0) {
+                var _walker = document.createTreeWalker(fragment, 5 /* elements & text */);
+                var parts = this.template.parts;
+                var _index = 0;
+                var _partIndex = 0;
+                var templatePart = parts[0];
+                var node = _walker.nextNode();
+                while (node != null && _partIndex < parts.length) {
+                    if (_index === templatePart.index) {
+                        this._parts.push(this._partCallback(this, templatePart, node));
+                        templatePart = parts[++_partIndex];
+                    } else {
+                        _index++;
+                        node = _walker.nextNode();
+                    }
+                }
+            }
+            return fragment;
+        }
+    }]);
+
+    return TemplateInstance;
+}();
+//# sourceMappingURL=lit-html.js.map
 
 /***/ })
 /******/ ]);
